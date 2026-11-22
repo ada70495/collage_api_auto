@@ -1,0 +1,13 @@
+# 接口自动化测试框架依赖
+pytest>=8.0
+requests>=2.31
+PyYAML>=6.0
+allure-pytest>=2.13
+pytest-rerunfailures>=14.0
+loguru>=0.7
+
+# 图片产物校验（尺寸、像素、通道）与被测服务端的图像处理
+Pillow>=10.0
+
+# 本地被测服务（mock_server/app.py）
+flask>=3.0

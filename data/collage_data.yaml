@@ -1,0 +1,92 @@
+# 滤镜：五档全集，逐个验证输出与尺寸
+filters:
+  - "grayscale"
+  - "sepia"
+  - "warm"
+  - "cool"
+  - "vivid"
+
+# 调整参数边界：0 与 200 是合法两端，100 为原图
+adjust_cases:
+  - case_name: "亮度调到 0（最暗）"
+    params: { brightness: 0 }
+    expect: 200
+  - case_name: "亮度调到 200（最亮）"
+    params: { brightness: 200 }
+    expect: 200
+  - case_name: "亮度 201 越界"
+    params: { brightness: 201 }
+    expect: 400
+    msg: "0-200"
+  - case_name: "对比度 -1 低于下限"
+    params: { contrast: -1 }
+    expect: 400
+  - case_name: "饱和度非整数"
+    params: { saturation: "80" }
+    expect: 400
+
+# 模糊半径边界：0 表示原样返回
+blur_cases:
+  - case_name: "模糊半径 0"
+    radius: 0
+    expect: 200
+  - case_name: "模糊半径 50（上限）"
+    radius: 50
+    expect: 200
+  - case_name: "模糊半径 51 越界"
+    radius: 51
+    expect: 400
+    msg: "0-50"
+
+# 文字参数边界
+text_cases:
+  - case_name: "字号 12（下限）"
+    text: "Hi"
+    font_size: 12
+    expect: 200
+  - case_name: "字号 72（上限）"
+    text: "Hi"
+    font_size: 72
+    expect: 200
+  - case_name: "字号 11 越界"
+    text: "Hi"
+    font_size: 11
+    expect: 400
+    msg: "12-72"
+  - case_name: "文字 21 字符超长"
+    text: "123456789012345678901"
+    font_size: 24
+    expect: 400
+    msg: "20"
+
+# 边框宽度边界：输出尺寸 = 原尺寸 + 2 * width
+border_cases:
+  - case_name: "边框宽度 1（下限）"
+    width: 1
+    expect: 200
+  - case_name: "边框宽度 50（上限）"
+    width: 50
+    expect: 200
+  - case_name: "边框宽度 0 非法"
+    width: 0
+    expect: 400
+    msg: "1-50"
+
+# 拼图模板与槽位数
+templates:
+  - { template_id: "row_2", slots: 2 }
+  - { template_id: "row_3", slots: 3 }
+  - { template_id: "grid_2x2", slots: 4 }
+
+# 拼图间距边界
+gap_cases:
+  - case_name: "间距 0"
+    gap: 0
+    expect: 200
+  - case_name: "间距 20（上限）"
+    gap: 20
+    expect: 200
+  - case_name: "间距 21 越界"
+    gap: 21
+    expect: 400
+    msg: "0-20"
