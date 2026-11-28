@@ -4,8 +4,7 @@
 技术栈：Python 3.13 + requests + pytest + PyYAML + Pillow + Allure + loguru，被测服务用 Flask + Pillow 起在本地。
 
 被测服务是仓库里的一个 Flask 应用（`mock_server/app.py`），13 个业务接口。图片处理是真的跑 Pillow，接口返回 PNG 的 base64；
-测试侧同样用 Pillow 解码产物，校验尺寸、像素、透明度、通道与格式，而不是只看业务码。
-克隆仓库、装好依赖就能跑，当前用例 56 条。
+测试侧同样用 Pillow 解码产物，校验尺寸、像素、透明度、通道与格式，而不是只看业务码。当前 56 条用例。
 
 ## 环境要求
 
