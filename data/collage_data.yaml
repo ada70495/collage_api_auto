@@ -90,3 +90,13 @@ gap_cases:
     gap: 21
     expect: 400
     msg: "0-20"
+
+# 抠图容差两端：0 只去掉与背景色完全相同的像素，100 会把全图判为背景
+cutout_tolerance:
+  exact: 0
+  full: 100
+
+# 导出质量两端：1 为最低质量，100 为最高质量
+export_quality:
+  lowest: 1
+  highest: 100

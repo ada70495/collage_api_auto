@@ -46,6 +46,27 @@ class TestCutout:
         a.eq(pixel_at(image, 0, 0)[3], 0, "四角背景应变为透明")
         a.finish()
 
+    @allure.story("容差两端：0 只删纯背景、100 全图透明")
+    def test_cutout_tolerance_edges(self, api):
+        """容差 0 仅去掉与背景色完全相同的像素；容差 100 时所有像素都判为背景"""
+        exact = api.cutout(
+            DEMO_SHAPE, bg_color="#FFFFFF", tolerance=DATA["cutout_tolerance"]["exact"]
+        ).json()
+        full = api.cutout(
+            DEMO_SHAPE, bg_color="#FFFFFF", tolerance=DATA["cutout_tolerance"]["full"]
+        ).json()
+
+        a = AssertHandler()
+        a.eq(exact["code"], 200, "容差 0 业务码")
+        a.eq(pixel_at(exact["data"]["base64"], 0, 0)[3], 0, "纯背景像素应透明")
+        a.eq(pixel_at(exact["data"]["base64"], 200, 150)[3], 255, "主体像素保持不透明")
+        a.eq(alpha_ratio(exact["data"]["base64"]) < 1.0, True, "仍保留不透明主体")
+
+        a.eq(full["code"], 200, "容差 100 业务码")
+        a.eq(alpha_ratio(full["data"]["base64"]), 1.0, "全图判为背景")
+        a.eq(pixel_at(full["data"]["base64"], 200, 150)[3], 0, "主体像素也被判为背景")
+        a.finish()
+
     @allure.story("容差超范围被拒")
     def test_cutout_tolerance_out_of_range(self, api):
         body = api.cutout(DEMO_SHAPE, tolerance=101).json()

@@ -148,6 +148,26 @@ class TestExport:
         a.eq(body["data"]["mode"], "RGB", "JPEG 不支持 alpha，应转为 RGB")
         a.finish()
 
+    @allure.story("导出质量两端：1 与 100 的产物体积")
+    def test_export_quality_edges(self, api):
+        """同一张图按质量 1 与 100 导出 JPEG，尺寸一致、低质量的产物体积更小"""
+        low = api.export(DEMO_2, "jpg", quality=DATA["export_quality"]["lowest"]).json()
+        high = api.export(DEMO_2, "jpg", quality=DATA["export_quality"]["highest"]).json()
+
+        a = AssertHandler()
+        a.eq(low["code"], 200, "质量 1 业务码")
+        a.eq(high["code"], 200, "质量 100 业务码")
+        a.eq(low["data"]["format"], "JPEG", "低质量导出格式")
+        a.eq(high["data"]["format"], "JPEG", "高质量导出格式")
+        a.eq((low["data"]["width"], low["data"]["height"]), (400, 300), "低质量导出尺寸不变")
+        a.eq((high["data"]["width"], high["data"]["height"]), (400, 300), "高质量导出尺寸不变")
+        a.eq(
+            len(low["data"]["base64"]) < len(high["data"]["base64"]),
+            True,
+            "质量 1 的产物体积小于质量 100",
+        )
+        a.finish()
+
     @allure.story("非法导出格式被拒")
     def test_export_invalid_format(self, api):
         body = api.export(DEMO_ALPHA, "webp").json()
